@@ -7,7 +7,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 class Api1Controller extends Controller
+
 {
+	{
+		public function store  (Request $request)
+		//nombres de las tablas de base de datos donde se guardan los datos
+
+		$token_validador = token_model::select('token')->where('token', $request->ews_token)->first();
+		if ($token_validador == ""){
+			$m = "La peticion requiere de autenticacion";
+			$tabla1->respuesta=$m;$tabla1->save();return response()->json(["wsp_mensaje"=>$m], 403);
+		}
+		elseif 
+		}
+	}
     public function ingresar_datos (request $request) {
     	
     	$ciudadano= datosGral::where('Dat_Nombre', $request->input('nombre'))
