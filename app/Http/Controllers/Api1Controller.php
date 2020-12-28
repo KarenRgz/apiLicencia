@@ -11,67 +11,83 @@ class Api1Controller extends Controller
 {
 	{
 		public function store  (Request $request)
-		//nombres de las tablas de base de datos donde se guardan los datos
+		{
+			$token_web_form - Token::select('tokens.*')->('id_token', '-', '1')->get();
+			foreach ($token_web_form as $value) {
+				$token_web_form = $value->token;
+			}
+			$data = [ 
+				"ews_token"=> strip_tags(trim($request->input('ews_token'))), 
+				"ews_no_solicitud"=> strip_tags(trim($request->input('ews_no_solicitud'))), 
+				"ews_llave"=> strip_tags(trim($request->input('ews_llave'))), 
+				"ews_id_tramite"=> strip_tags(trim($request->input('ews_id_tramite'))), 
+				"ews_fecha_solicitud"=> strip_tags(trim($request->input('ews_fecha_solicitud'))),
+				"ews_hora_solicitud"=> strip_tags(trim($request->input('ews_hora_solicitud'))),
+				"ews_nombre"=> strip_tags(trim($request->input('ews_nombre'))),
+				"ews_apellido_paterno"=> strip_tags(trim($request->input('ews_apellido_paterno'))),
+				"ews_apellido_materno"=> strip_tags(trim($request->input('ews_apellido_materno'))),
+				"ews_curp"=> strip_tags(trim($request->input('ews_curp'))),
+				"ews_licencia"=> strip_tags(trim($request->input('ews_licencia'))),
+				"ews_edad"=> strip_tags(trim($request->input('ews_edad'))),
+				"ews_lugar_nacimiento"=> strip_tags(trim($request->input('ews_lugar_nacimiento'))),
+				"ews_telefono"=> strip_tags(trim($request->input('ews_telefono'))),
+				"ews_nombre_avisar"=> strip_tags(trim($request->input('ews_nombre_avisar'))),
+				"ews_apellido_paterno_avisar"=> strip_tags(trim($request->input('ews_apellido_paterno_avisar'))),
+				"ews_apellido_materno_avisar"=> strip_tags(trim($request->input('ews_apellido_materno_avisar'))),
+				"ews_direccion_avisar"=> strip_tags(trim($request->input('ews_direccion_avisar'))),
+				"ews_telefono_avisar"=> strip_tags(trim($request->input('ews_telefono_avisar'))),
+				"ews_agudeza_visual"=> strip_tags(trim($request->input('ews_agudeza_visual'))),
+				"ews_lentes"=> strip_tags(trim($request->input('ews_lentes'))),
+				"ews_tipo_sangre"=> strip_tags(trim($request->input('ews_tipo_sangre'))),
+				"ews_estatura"=> strip_tags(trim($request->input('ews_estatura'))),
+				"ews_padecimientos"=> strip_tags(trim($request->input('ews_padecimientos'))),
+				"ews_donador"=> strip_tags(trim($request->input('ews_donador'))),
+				"ews_vigencia"=> strip_tags(trim($request->input('ews_vigencia'))),
+			];
 
-		$token_validador = token_model::select('token')->where('token', $request->ews_token)->first();
-		if ($token_validador == ""){
-			$m = "La peticion requiere de autenticacion";
-			$tabla1->respuesta=$m;$tabla1->save();return response()->json(["wsp_mensaje"=>$m], 403);
+			$data = (object) $data;
+
+			if($token_web == $data->ews_token) {
+				if(empty($data->ews_llave) ||
+					empty($data->ews_id_tramite) ||
+					empty($data->ews_no_solicitud) ||
+					empty($data->ews_fecha_solicitud) ||
+					empty($data->ews_hora_solicitud) ||
+					empty($data->ews_nombre) ||
+					empty($data->ews_apellido_paterno) ||
+					empty($data->ews_apellido_materno) ||
+					empty($data->ews_curp) ||
+					empty($data->ews_licencia) ||
+					empty($data->ews_edad) ||
+					empty($data->ews_lugar_nacimiento) ||
+					empty($data->ews_telefono) ||
+					empty($data->ews_nombre_avisar) ||
+					empty($data->ews_apellido_paterno_avisar) ||
+					empty($data->ews_apellido_materno_avisar) ||
+					empty($data->ews_direccion_avisar) ||
+					empty($data->ews_telefono_avisar) ||
+					empty($data->ews_agudeza_visual) ||
+					empty($data->ews_lentes) ||
+					empty($data->ews_tipo_sangre) ||
+					empty($data->ews_estatura) ||
+					empty($data->ews_padecimientos) ||
+					empty($data->ews_donador) ||
+					empty($data->ews_vigencia) ||
+				){
+					$saveAcceso = new TokenAcceso;
+					foreach ($token_web_form as $id_token) {
+							$saveAcceso->id_token - $id_token->id_token;
+					}
+
+					$saveAcceso->fecha = date ('Y-m-d');
+					$saveAcceso->hora = date ('H:i:s');
+					$saveAcceso->ip - $request->ip();
+					$saveAcceso->dato_clave = $data->ews_licencia;
+					$saveAcceso->mensaje = 'Token usado con exito pero con informacion faltante';
+					$saveAcceso->codigo = '400';
+					$saveAcceso->save();
+					return response()->json(array("wsp_mensaje"-> 'Falta informacion'), 400);
+				}
+				$completo
+			}
 		}
-		elseif 
-		}
-	}
-    public function ingresar_datos (request $request) {
-    	
-    	$ciudadano= datosGral::where('Dat_Nombre', $request->input('nombre'))
-    	->where('Dat_Paterno', '=', $request->input('apellido_paterno'))
-    	->where('Dat_Materno', '=', $request->input('apellido_materno'))
-    	->where('Dat_CURP', '=', $request->input('curp'))
-    	->FirstOrFail();
-
-    $licencia = Licencia::join('dbo.TipLic_TipoLicencia', 'TipLic_TipoLicencia.TipLic_id',
-	->select('Lic_Licencias.*', 'TipLic_TipoLicencia.TipLic_Descripcion')
-	->where('Lic_NumFolioAnterior', '=', $request->input('numero_licencia'));
-
-	$json = array();
-	$data = $licencia->get()->toArray();
-	$json = json_decode(json_encode($data), true);
-
-	foreach ($json as $value) {
-		$cadena = response()->json([
-			"datos"=>(object)array(
-				"0"->(object)array(
-					"0"=>(object)array(
-						"0"=> "Datos del historial de licencias"
-					),
-					"1"=>(object)array(
-						"0"=> "Numero de licencia",
-						"1"=> $value['Lic_NumFolioAnterior']
-					),
-					"2"=>(object)array(
-						"0"=>"Tipo licencia",
-						"1"=> $value['TipLic_Descripcion']
-					),
-					"3"=>(object)array(
-						"0"=>"Numero de expediente",
-						"1"=>$value['Lic_Expediente']
-					),
-					"4"=>(object)array(
-						"0"=>"Vigencia",
-						"1"=>$value['Lic_Vigencia']
-					"5"=>(object)array(
-						"0"=>"Fecha de expedicion",
-						"1"=>$value['Lic_Expedicion']
-					),
-					"6"=>(object)array(
-						"0"=>"Fecha de vencimiento",
-						"1"=>$value["Lic_vencimiento"]
-					)
-				)
-			)
-		]);
-			return $cadena;
-	}
-	return view ('vista_previa.vista_datos', compact ('licencia'));
-    }
-}
