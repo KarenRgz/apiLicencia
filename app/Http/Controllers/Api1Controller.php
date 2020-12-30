@@ -88,6 +88,55 @@ class Api1Controller extends Controller
 					$saveAcceso->save();
 					return response()->json(array("wsp_mensaje"-> 'Falta informacion'), 400);
 				}
-				$completo
+			$completo - datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '-', 'Dat_DatosGral.Dat_Id')
+					->select('Dat_DatosGral.*', 'Lic_Licencias.*')
+					->where('Dat_Nombre', '=', $data->ews_nombre)
+					->where('Dat_Paterno', '=', $data->ews_apellido_paterno)
+					->where('Dat_Materno', '=', $data->ews_apellido_materno)
+					->where('Dat_CURP', '=', $data->ews_curp)
+					->where('Lic_Expediente', '=', $data->ews_licencia)
+					->where('TipLic_Id', '=', '3')
+					->orderby('Lic_Expedicion', 'asc')
+					->get();
+			$curp - datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '=', 'Dat_DatosGral.Dat_Id')
+					->select('Dat_DatosGral.*', 'Lic_Licencias.*')
+					->where('Dat_Nombre', '=', $data->ews_nombre)
+					->where('Dat_Paterno', '=', $data->ews_apellido_paterno)
+					->where('Dat_Materno', '=', $data->ews_apellido_materno)
+					->where('Dat_CURP', '=', $data->ews_curp)
+					->where('TipLic_Id', '=', '3')
+					->orderby('Lic_Expedicion', 'asc')
+					->get();
+			$expediente - datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '=', 'Dat_DatosGral.Dat_Id')
+					->select('Dat_DatosGral.*', 'Lic_Licencias.*')
+					->where('Dat_Nombre', '=', $data->ews_nombre)
+					->where('Dat_Paterno', '=', $data->ews_apellido_paterno)
+					->where('Dat_Materno', '=', $data->ews_apellido_materno)
+					->where('Lic_Expediente', '=', $data->ews_licencia)
+					->where('TipLic_Id', '=', '3')
+					->orderby('Lic_Expedicion', 'asc')
+					->get();
+			if($curp == '[]'){
+				$persona = $expediente;
+				if ($persona == '[]'){
+					return response()->json(['wsp_mensaje'=>'Ciudadano no encontrado'], 404);
+				}
+			}elseif ($expediente == '[]') {
+				$persona = $curp;
+				if ($persona == '[]'){
+					return response()->json(['wsp_mensaje'=>'Ciudadano no encontrado'], 404);
+				}
+			}else{
+				$persona = $completo;
+				if($persona == '[]'){
+					return response()->json(['wsp_mensaje'=>'Ciudadano no encontrado'], 404);
+				}
+			}
+			$client = new Client([ 
+				//Nose que va aqui
+				'base_url' => 'jsdkhsfksjdkf',
+				'timeout' => 2.0,
+			]);
+			
 			}
 		}
