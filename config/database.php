@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION','DB_CONNECTION2', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,9 +83,9 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('sqlsrv_HOST', 'localhost'),
             'port' => env('sqlsrv_PORT', '1433'),
-            'database' => env('sqlsrv_DATABASE', 'forge'),
-            'username' => env('sqlsrv_USERNAME', 'forge'),
-            'password' => env('sqlsrv_PASSWORD', ''),
+            'database' => env('sqlsrv_DATABASE', 'KIMERA'),
+            'username' => env('sqlsrv_USERNAME', 'sa'),
+            'password' => env('sqlsrv_PASSWORD', '23deoctubre'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
