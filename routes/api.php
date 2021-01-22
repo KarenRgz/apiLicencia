@@ -18,3 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+Route::get('api1', 'UserController@Api1Controller')
+    ->name('users.api1');
+

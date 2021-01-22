@@ -1,18 +1,23 @@
 <?php
 use DB;
 use App\dbo.Dat_DatosGral;
-
+use App\dbo.Lic_Licencias;
+use App\dbo.solicitudes;
+use App\dbo.token_accesos;
+use App\dbo.estados;
+use App\dbo.tokens;
+use App\dbo.TipLic_TipoLicencia;
+use App\dbo.TipLic_TipoLicencia;
+use App\dbo.Lic_Licencias.Dat_Id;
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
 class Api1Controller extends Controller
-
-
 	{
-		public function store  (Request $request)
+		public function datos_renovacion_chofer  (Request $request)
 		{
-			$token_web_form - Token::select('tokens.*')->('id_token', '-', '1')->get();
+			$token_web_form = Token::select('tokens.*')->where('id_token', '-', '1')->get();
 			foreach ($token_web_form as $value) {
 				$token_web_form = $value->token;
 			}
@@ -43,38 +48,14 @@ class Api1Controller extends Controller
 				"ews_estatura"=> strip_tags(trim($request->input('ews_estatura'))),
 				"ews_padecimientos"=> strip_tags(trim($request->input('ews_padecimientos'))),
 				"ews_donador"=> strip_tags(trim($request->input('ews_donador'))),
-				"ews_vigencia"=> strip_tags(trim($request->input('ews_vigencia'))),
+				"ews_vigencia"=> strip_tags(trim($request->input('ews_vigencia')))
 			];
 
 			$data = (object) $data;
 
 			if($token_web == $data->ews_token) {
-				if(empty($data->ews_llave) ||
-					empty($data->ews_id_tramite) ||
-					empty($data->ews_no_solicitud) ||
-					empty($data->ews_fecha_solicitud) ||
-					empty($data->ews_hora_solicitud) ||
-					empty($data->ews_nombre) ||
-					empty($data->ews_apellido_paterno) ||
-					empty($data->ews_apellido_materno) ||
-					empty($data->ews_curp) ||
-					empty($data->ews_licencia) ||
-					empty($data->ews_edad) ||
-					empty($data->ews_lugar_nacimiento) ||
-					empty($data->ews_telefono) ||
-					empty($data->ews_nombre_avisar) ||
-					empty($data->ews_apellido_paterno_avisar) ||
-					empty($data->ews_apellido_materno_avisar) ||
-					empty($data->ews_direccion_avisar) ||
-					empty($data->ews_telefono_avisar) ||
-					empty($data->ews_agudeza_visual) ||
-					empty($data->ews_lentes) ||
-					empty($data->ews_tipo_sangre) ||
-					empty($data->ews_estatura) ||
-					empty($data->ews_padecimientos) ||
-					empty($data->ews_donador) ||
-					empty($data->ews_vigencia) ||
-				){
+				if(empty($data->ews_llave) || empty($data->ews_id_tramite) || empty($data->ews_no_solicitud) || empty($data->ews_fecha_solicitud) || empty($data->ews_hora_solicitud) ||	empty($data->ews_nombre) ||	empty($data->ews_apellido_paterno) ||	empty($data->ews_apellido_materno) ||	empty($data->ews_curp) ||	empty($data->ews_licencia) ||	empty($data->ews_edad) ||	empty($data->ews_lugar_nacimiento) ||	empty($data->ews_telefono) ||	empty($data->ews_nombre_avisar) ||	empty($data->ews_apellido_paterno_avisar) ||	empty($data->ews_apellido_materno_avisar) ||	empty($data->ews_direccion_avisar) ||	empty($data->ews_telefono_avisar) || empty($data->ews_agudeza_visual) ||	empty($data->ews_lentes) || empty($data->ews_tipo_sangre) || empty($data->ews_estatura) ||	empty($data->ews_padecimientos) || empty($data->ews_donador) ||empty($data->ews_vigencia)
+ 				){
 					$saveAcceso = new TokenAcceso;
 					foreach ($token_web_form as $id_token) {
 							$saveAcceso->id_token - $id_token->id_token;
@@ -84,37 +65,37 @@ class Api1Controller extends Controller
 					$saveAcceso->hora = date ('H:i:s');
 					$saveAcceso->ip - $request->ip();
 					$saveAcceso->dato_clave = $data->ews_licencia;
-					$saveAcceso->mensaje = 'Token usado con exito pero con informacion faltante';
+					$saveAcceso->mensaje = 'La solicitud no fue válida';
 					$saveAcceso->codigo = '400';
 					$saveAcceso->save();
-					return response()->json(array("wsp_mensaje"-> 'Falta informacion'), 400);
+					return response()->json(array("wsp_mensaje"-> 'Informacion Faltante'), 400);
 				}
-			$completo - datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '-', 'Dat_DatosGral.Dat_Id')
+			$completo = datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '-', 'Dat_DatosGral.Dat_Id')
 					->select('Dat_DatosGral.*', 'Lic_Licencias.*')
 					->where('Dat_Nombre', '=', $data->ews_nombre)
 					->where('Dat_Paterno', '=', $data->ews_apellido_paterno)
 					->where('Dat_Materno', '=', $data->ews_apellido_materno)
 					->where('Dat_CURP', '=', $data->ews_curp)
 					->where('Lic_Expediente', '=', $data->ews_licencia)
-					->where('TipLic_Id', '=', '3')
+					->where('TipLic_Id', '=', '2')
 					->orderby('Lic_Expedicion', 'asc')
 					->get();
-			$curp - datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '=', 'Dat_DatosGral.Dat_Id')
+			$curp = datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '-', 'Dat_DatosGral.Dat_Id')
 					->select('Dat_DatosGral.*', 'Lic_Licencias.*')
 					->where('Dat_Nombre', '=', $data->ews_nombre)
 					->where('Dat_Paterno', '=', $data->ews_apellido_paterno)
 					->where('Dat_Materno', '=', $data->ews_apellido_materno)
 					->where('Dat_CURP', '=', $data->ews_curp)
-					->where('TipLic_Id', '=', '3')
+					->where('TipLic_Id', '=', '2')
 					->orderby('Lic_Expedicion', 'asc')
 					->get();
-			$expediente - datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '=', 'Dat_DatosGral.Dat_Id')
+			$expediente = datoGral::join('dbo.Lic_Licencias', 'Lic_Licencias.Dat_Id', '=', 'Dat_DatosGral.Dat_Id')
 					->select('Dat_DatosGral.*', 'Lic_Licencias.*')
 					->where('Dat_Nombre', '=', $data->ews_nombre)
 					->where('Dat_Paterno', '=', $data->ews_apellido_paterno)
 					->where('Dat_Materno', '=', $data->ews_apellido_materno)
 					->where('Lic_Expediente', '=', $data->ews_licencia)
-					->where('TipLic_Id', '=', '3')
+					->where('TipLic_Id', '=', '2')
 					->orderby('Lic_Expedicion', 'asc')
 					->get();
 			if($curp == '[]'){
@@ -138,6 +119,7 @@ class Api1Controller extends Controller
 				'base_url' => 'jsdkhsfksjdkf',
 				'timeout' => 2.0,
 			]);
+
 			$response = $client ->request('POST','');
 		$saveEstado = new Estado;
 		$saveEstado->nombre = 'INICIADO';
@@ -199,10 +181,10 @@ class Api1Controller extends Controller
 
 		$saveSolicitud->save();
 
-		$nombre_accidente = data->ews_nombre_avisar, " ", $data->ews_apellido_paterno_avisar, " ", $ews_apellido_materno;
+		$nombre_accidente = $data->ews_nombre_avisar. " ". $data->ews_apellido_paterno_avisar. " ". $ews_apellido_materno;
 		$id_save_solicitud = $saveSolicitud->id_solicitud;
 		$no_solicitud_api=Solicitud::find($id_save_solicitud);
-		$no_solicitud_api=no_solicitud_api =date('v').'-'.str_pad($id_save_solicitud, 4, "0", STR_PAD_LEFT);
+		$no_solicitud_api=no_solicitud_api =date('Y').'-'.str_pad($id_save_solicitud, 4, "0", STR_PAD_LEFT);
 		$no_solicitud_api->save();
 
 		foreach ($persona as $value) {
@@ -314,7 +296,7 @@ class Api1Controller extends Controller
 		$saveAcceso->hora = date('H:i:s');
 		$saveAcceso->ip = $request->ip();
 		$saveAcceso->dato_clave = $data->ews_licencia;
-		$saveAcceso->mensaje = 'token utilizado con exito';
+		$saveAcceso->mensaje = 'Solicitud Exitosa';
 		$saveAcceso->codigo = '200';
 		$saveAcceso->save();
 		return response()->json(['wsp_mensaje' =>'ciudadano Encontrado'
@@ -333,7 +315,7 @@ class Api1Controller extends Controller
 				$saveAcceso->hora = date('H:i:s');
 				$saveAcceso->ip = $request->ip();
 				$saveAcceso->dato_clave = data->ews_licencia;
-				$saveAcceso->mensaje = 'tokn no Utilizado';
+				$saveAcceso->mensaje = 'Token Inválido o Inexistente';
 				$saveAcceso->codigo='403';
 				$saveAcceso->save();
 				return response()->json(arrar("wsp_mensaje" =>'Token Invalido'),403);
